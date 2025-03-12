@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { protect, authorize } = require("../middleware/auth");
+const { sendEmail } = require("../utils/mailer");
+const crypto = require("crypto");
 
 // 🔹 Generér JWT-token
 const generateToken = (userId) => {
@@ -39,42 +41,30 @@ router.post("/register", async (req, res) => {
         .json({ success: false, message: "Email er allerede taget" });
     }
 
-    try {
-      // Krypter adgangskoden
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // Opret en ny bruger - lad User modellen håndtere password hashing
+    user = new User({
+      name,
+      email,
+      password, // Send raw password - det bliver hashet i User modellen
+      role: role || "user",
+    });
 
-      // Opret en ny bruger
-      user = new User({
-        name,
-        email,
-        password: hashedPassword,
-        role: role || "user",
-      });
+    await user.save();
+    console.log("Bruger gemt i database:", user._id);
 
-      await user.save();
-      console.log("Bruger gemt i database:", user._id);
-
-      // Generér token og returnér bruger
-      const token = generateToken(user._id);
-      res.status(201).json({
-        success: true,
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          profileImage: user.profileImage,
-        },
-      });
-    } catch (hashError) {
-      console.error("Fejl ved kryptering eller oprettelse:", hashError);
-      return res.status(500).json({
-        success: false,
-        message: "Fejl ved kryptering eller oprettelse af bruger",
-        error: hashError.message,
-      });
-    }
+    // Generér token og returnér bruger
+    const token = generateToken(user._id);
+    res.status(201).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+      },
+    });
   } catch (err) {
     console.error("Registreringsfejl:", err);
     res.status(500).json({
@@ -90,6 +80,7 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log("Login forsøg for:", email);
+    console.log("Password længde:", password?.length);
 
     // Tjek om email og password er angivet
     if (!email || !password) {
@@ -111,19 +102,11 @@ router.post("/login", async (req, res) => {
     }
 
     console.log("Bruger fundet:", user.name, user.email);
+    console.log("Gemt password hash længde:", user.password?.length);
 
-    // Sikr at password ikke er null eller undefined
-    if (!user.password) {
-      console.log("Adgangskode mangler i databasen");
-      return res.status(500).json({
-        success: false,
-        message: "Adgangskoden er ikke gemt korrekt i databasen",
-      });
-    }
-
-    // Sammenlign adgangskoden med bcrypt
+    // Sammenlign adgangskoden
     console.log("Sammenligner adgangskoder...");
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.matchPassword(password);
     console.log("Adgangskode match:", isMatch);
 
     if (!isMatch) {
@@ -200,11 +183,13 @@ router.get("/users", protect, authorize("admin"), async (req, res) => {
 // 🔹 Opdater brugerprofil (Kun for loggede-in brugere)
 router.post("/update-profile", protect, async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, password, currentPassword } = req.body;
     console.log("Modtaget profilopdatering:", {
       name,
       email,
       userId: req.user.id,
+      hasPassword: !!password,
+      hasCurrentPassword: !!currentPassword,
     });
 
     // Validér input
@@ -227,12 +212,51 @@ router.post("/update-profile", protect, async (req, res) => {
       });
     }
 
+    // Hent den aktuelle bruger med adgangskode
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Bruger ikke fundet",
+      });
+    }
+
+    // Forbered opdateringsdata
+    const updateData = { name, email };
+
+    // Hvis der er angivet en ny adgangskode, skal vi validere den nuværende og opdatere
+    if (password) {
+      // Tjek om nuværende adgangskode er angivet
+      if (!currentPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Nuværende adgangskode er påkrævet for at ændre adgangskode",
+        });
+      }
+
+      // Validér nuværende adgangskode
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: "Nuværende adgangskode er forkert",
+        });
+      }
+
+      // Krypter og gem den nye adgangskode
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+      console.log("Adgangskode vil blive opdateret");
+    }
+
     // Opdater brugeren
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, email },
-      { new: true, runValidators: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -243,6 +267,13 @@ router.post("/update-profile", protect, async (req, res) => {
 
     console.log("Bruger opdateret:", updatedUser);
 
+    // Hvis adgangskoden blev ændret, generér en ny token
+    let token = null;
+    if (password) {
+      token = generateToken(updatedUser._id);
+      console.log("Ny token genereret efter adgangskodeændring");
+    }
+
     res.status(200).json({
       success: true,
       user: {
@@ -252,6 +283,7 @@ router.post("/update-profile", protect, async (req, res) => {
         role: updatedUser.role,
         profileImage: updatedUser.profileImage,
       },
+      ...(token ? { token } : {}), // Inkluder kun token hvis adgangskoden blev ændret
     });
   } catch (err) {
     console.error("Fejl ved profilopdatering:", err);
@@ -311,6 +343,175 @@ router.post("/upload-profile-image", protect, async (req, res) => {
       success: false,
       message: "Der opstod en fejl ved upload af profilbilledet",
       error: err.message,
+    });
+  }
+});
+
+// 🔹 Anmod om nulstilling af adgangskode
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log("Anmodning om nulstilling af adgangskode for:", email);
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email er påkrævet",
+      });
+    }
+
+    // Find brugeren i databasen
+    const user = await User.findOne({ email });
+
+    // Hvis brugeren ikke findes, returnerer vi stadig en succesbesked
+    // Dette er for at forhindre enumeration af brugernavne
+    if (!user) {
+      console.log(
+        "Bruger ikke fundet, men returnerer succes for sikkerhed:",
+        email
+      );
+      return res.status(200).json({
+        success: true,
+        message:
+          "Hvis en konto med denne email findes, er der sendt en email med instruktioner til at nulstille adgangskoden.",
+      });
+    }
+
+    // Generer et reset token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    // Hash token og gem det i databasen
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Sæt udløbstid til 10 minutter
+    const resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+    // Opdater brugeren med token og udløbstid
+    await User.findByIdAndUpdate(user._id, {
+      resetPasswordToken,
+      resetPasswordExpire,
+    });
+
+    // Opret reset URL
+    const resetUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/reset-password/${resetToken}`;
+
+    // Opret email indhold
+    const message = `
+      <h1>Nulstilling af adgangskode</h1>
+      <p>Du modtager denne email, fordi du (eller en anden) har anmodet om at nulstille adgangskoden til din konto.</p>
+      <p>Klik på følgende link for at nulstille din adgangskode:</p>
+      <a href="${resetUrl}" target="_blank">Nulstil adgangskode</a>
+      <p>Dette link udløber om 10 minutter.</p>
+      <p>Hvis du ikke har anmodet om dette, bedes du ignorere denne email, og din adgangskode vil forblive uændret.</p>
+    `;
+
+    // Send email
+    await sendEmail({
+      to: user.email,
+      subject: "Nulstilling af adgangskode",
+      html: message,
+    });
+
+    console.log("Reset email sendt til:", user.email);
+
+    res.status(200).json({
+      success: true,
+      message: "Email sendt",
+    });
+  } catch (err) {
+    console.error("Fejl ved anmodning om nulstilling af adgangskode:", err);
+
+    // Hvis der opstår en fejl, fjern reset token fra databasen
+    if (req.body.email) {
+      const user = await User.findOne({ email: req.body.email });
+      if (user) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+      }
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Der opstod en fejl ved afsendelse af email",
+    });
+  }
+});
+
+// 🔹 Nulstil adgangskode
+router.post("/reset-password/:resetToken", async (req, res) => {
+  try {
+    const { password } = req.body;
+    const { resetToken } = req.params;
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Ny adgangskode er påkrævet",
+      });
+    }
+
+    if (!resetToken) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset token er påkrævet",
+      });
+    }
+
+    // Hash token fra URL
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Find bruger med token og tjek om token er udløbet
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Ugyldigt eller udløbet token",
+      });
+    }
+
+    // Krypter ny adgangskode
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Opdater bruger med ny adgangskode og fjern reset token
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    // Generer ny token
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Adgangskode nulstillet",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (err) {
+    console.error("Fejl ved nulstilling af adgangskode:", err);
+    res.status(500).json({
+      success: false,
+      message: "Der opstod en fejl ved nulstilling af adgangskoden",
     });
   }
 });

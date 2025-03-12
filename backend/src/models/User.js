@@ -32,6 +32,8 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
   learningProgress: {
     completedLetters: [
       {
@@ -53,16 +55,44 @@ const userSchema = new mongoose.Schema({
 
 // Hash password før gem
 userSchema.pre("save", async function (next) {
+  console.log("Pre save middleware kørt");
+  console.log("Password modificeret:", this.isModified("password"));
+  console.log("Password længde:", this.password?.length);
+
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    console.log("Password hashet, ny længde:", this.password?.length);
+    return next();
+  } catch (error) {
+    console.error("Fejl ved hashing af password:", error);
+    return next(error);
+  }
 });
 
 // Match password metode
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  console.log("matchPassword kaldt");
+  console.log("Indtastet password længde:", enteredPassword?.length);
+  console.log("Gemt password hash længde:", this.password?.length);
+
+  if (!this.password) {
+    console.log("Intet gemt password fundet");
+    return false;
+  }
+
+  try {
+    const isMatch = await bcrypt.compare(enteredPassword, this.password);
+    console.log("Password match resultat:", isMatch);
+    return isMatch;
+  } catch (error) {
+    console.error("Fejl ved sammenligning af passwords:", error);
+    return false;
+  }
 };
 
 module.exports = mongoose.model("User", userSchema);

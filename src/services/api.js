@@ -20,4 +20,4 @@ login: async (credentials) => {
     console.error("API login fejl:", error.message);
     throw error;
   }
-}, 
+}
