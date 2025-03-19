@@ -270,3 +270,169 @@ Ved implementering af ovenstående funktioner, overvej følgende:
    - Twilio for SMS-notifikationer
 
 Dette dokument opdateres løbende med fremskridt og nye ideer.
+
+## Fokusområder - Første iteration
+
+Baseret på nutidige prioriteter vil følgende områder være i fokus for den første udviklingsiteration:
+
+### Brugerengagement gennem Gamification
+
+#### 1. Pointsystem (Sprint 1-2)
+
+- [ ] **Grundlæggende pointsystem**
+
+  - Design database-struktur for point og aktiviteter
+  - Implementer point-tildeling for færdiggjorte aktiviteter (spil, lektioner, studiegrupper)
+  - Skab en synlig point-visning på profilen og dashboard
+
+- [ ] **Streak og daglig login-bonus**
+
+  - Implementer system til at registrere daglige logins
+  - Design progressivt belønningssystem (stigende belønninger for konsekvente logins)
+  - Skab visuelle indikatorer for streak-status
+
+- [ ] **Point-historik og analyse**
+  - Udvikle en detaljeret visning af hvordan og hvornår point er optjent
+  - Skab visuelle grafer over point-optjening over tid
+  - Implementer ugentlige og månedlige sammenfatninger
+
+#### 2. Achievements og Badges (Sprint 3-4)
+
+- [ ] **Grundlæggende achievement-system**
+
+  - Design database-model for achievements og deres kriterier
+  - Implementer 10-15 grundlæggende achievements (første login, første spil, etc.)
+  - Skab notifikationssystem for opnåede achievements
+
+- [ ] **Badge-design og -visning**
+
+  - Design visuelt attraktive badges for forskellige kategorier
+  - Implementer badge-samling på profilsiden
+  - Skab "næste skridt" visning for kommende badges
+
+- [ ] **Kategori-baserede achievements**
+  - Opret achievements for forskellige læringskategorier (matematik, sprog, etc.)
+  - Implementer sværhedsbaserede badges inden for hver kategori
+  - Tilføj sjældne/særlige badges for ekstraordinære præstationer
+
+#### 3. Niveau- og Progressionssystem (Sprint 5-6)
+
+- [ ] **Niveau-system**
+
+  - Design niveau-struktur med krav for hvert niveau
+  - Implementer niveau-op animationer og belønninger
+  - Skab visuel indikator for nuværende niveau og fremskridt til næste
+
+- [ ] **Færdighedstræer**
+
+  - Design træstrukturer for forskellige læringsområder
+  - Implementer låste/ulåste noder baseret på fremskridt
+  - Skab visuel fremstilling af samlede færdigheder og fremskridt
+
+- [ ] **Udfordringer og missioner**
+  - Udvikle et system for tidsbegrænsede udfordringer
+  - Design forskellige udfordringstyper (daglige, ugentlige, specielle)
+  - Implementer belønninger og notifikationer for udfordringer
+
+### Forældre- og Lærerinvolvering
+
+#### 1. Forældreportal (Sprint 1-3)
+
+- [ ] **Grundlæggende forældrekonto**
+
+  - Design database-model for forældre-barn relationer
+  - Implementer proces for at knytte børnekonti til forældrekonti
+  - Skab separat login og dashboard for forældre
+
+- [ ] **Aktivitetsoversigt**
+
+  - Udvikle detaljeret oversigt over barnets aktiviteter
+  - Implementer tidslinjefunktion for læringsfremskridt
+  - Skab filtreringsmuligheder for aktivitetstyper
+
+- [ ] **Præstationsindsigt**
+  - Design visualiseringer af barnets styrker og svagheder
+  - Implementer sammenligning med alderssvarende gennemsnit
+  - Skab personaliserede anbefalinger baseret på præstationer
+
+#### 2. Forældrekontrol og -værktøjer (Sprint 4-5)
+
+- [ ] **Tidsbegrænsning og skema**
+
+  - Design interface for at sætte tidsbegrænsninger
+  - Implementer skema for tilgængelige tider
+  - Skab notifikationer og påmindelser
+
+- [ ] **Indholdsfiltreringsværktøjer**
+
+  - Udvikle system til at kontrollere adgang til forskellige indholdstyper
+  - Implementer aldersbaseret filtrering
+  - Skab godkendelsesworkflow for visse aktiviteter
+
+- [ ] **Kommunikationsværktøjer**
+  - Design beskedsystem mellem forældre og lærere
+  - Implementer notifikationer om vigtige begivenheder
+  - Skab mulighed for at dele barnets præstationer
+
+#### 3. Lærerværktøjer (Sprint 6-8)
+
+- [ ] **Klasseadministration**
+
+  - Design system til at oprette og administrere klasser
+  - Implementer elev-tilføjelse og grupperingsværktøjer
+  - Skab oversigt over klasseaktivitet og -fremskridt
+
+- [ ] **Opgavetildeling og -evaluering**
+
+  - Udvikle værktøjer til at oprette og tildele opgaver
+  - Implementer automatisk og manuel evaluering
+  - Skab feedback-system til elever
+
+- [ ] **Fremskridtsrapportering**
+  - Design omfattende rapporter for individuelle elever og klasser
+  - Implementer eksport af data til forskellige formater
+  - Skab periodiske automatiske rapporter til forældre
+
+## Teknisk implementering for fokusområder
+
+### Database-ændringer
+
+- Tilføj følgende collections/tabeller:
+  - Points (bruger_id, aktivitet_type, point_antal, tidsstempel)
+  - Achievements (id, navn, beskrivelse, kriterie_type, kriterie_værdi, ikon_url)
+  - UserAchievements (bruger_id, achievement_id, opnået_dato)
+  - Levels (niveau, påkrævet_point, belønninger)
+  - UserProgress (bruger_id, niveau, total_point, streak_dage)
+  - ParentAccounts (id, navn, email, tilknyttede_børn)
+  - ClassGroups (id, lærer_id, navn, beskrivelse, elev_liste)
+  - TimeRestrictions (bruger_id, ugedag, start_tid, slut_tid)
+
+### API Endpoints
+
+- Nye endpoints der skal implementeres:
+  - `/api/points` - CRUD for pointsystem
+  - `/api/achievements` - Hent og kontroller achievements
+  - `/api/progress` - Hent og opdater brugerens progression
+  - `/api/parent` - Forældrekonti og børneoversigt
+  - `/api/teacher` - Lærerværktøjer og klassestyring
+  - `/api/restrictions` - Forældrekontrol-indstillinger
+
+### Frontend-komponenter
+
+- Nye komponenter der skal udvikles:
+  - PointsDisplay - Viser brugerens point og niveau
+  - AchievementGallery - Viser opnåede og tilgængelige badges
+  - ProgressChart - Visualiserer fremskridt over tid
+  - ParentDashboard - Oversigt for forældre
+  - TimeRestrictionSettings - Interface til tidsstyring
+  - ClassManagement - Værktøjer til lærere
+  - ReportGenerator - Generering af rapporter
+  - ChallengeHub - Oversigt over aktive udfordringer
+
+### Integrationer
+
+- Potentielle tredjepartsværktøjer til overvejelse:
+  - ChartJS eller D3.js for datapræsentation
+  - PDF.js for rapport-generering
+  - Firebase Cloud Messaging for notifikationer
+  - Google Classroom API for integration med eksisterende skolesystemer
