@@ -1,6 +1,42 @@
 # LæreLeg Projektplan & Roadmap
 
-Dette dokument indeholder den overordnede udviklingsplan og opgaveliste for LæreLeg platformen. Det fungerer som et levende dokument, der kan opdateres løbende, efterhånden som projektet udvikler sig.
+## 🚀 PRIMÆR VISION: Digital Læringsplatform for Alle Børn og Forældre
+
+LæreLeg vil være den førende digitale platform i Danmark, der skaber meningsfulde læringsoplevelser for alle børn, uanset deres uddannelsessituation. Vores mission er at skabe et supplement til traditionel undervisning, tilbyde ekstra læringsmuligheder og forbinde børn og forældre i et støttende, digitalt miljø.
+
+### Hvorfor en fleksibel platform for alle børn?
+
+- Bredere målgruppe giver flere potentielle brugere fra starten
+- Forældre kan bruge platformen som supplement til skolens læring
+- Børn kan bruge den uafhængigt af, om de går i skole eller undervises hjemme
+- Ingen behov for at vælge mellem folkeskole og hjemmeundervisning endnu
+- Mulighed for at udvikle i den rigtige retning baseret på brugerfeedback
+- Lettere at komme i gang uden godkendelse fra myndigheder
+
+### Centrale værdiskabende elementer
+
+1. **Supplerende læringsaktiviteter**
+
+   - Spændende og engagerende spil der styrker læring
+   - Interaktive opgaver der følger Fælles Mål
+   - Mulighed for at arbejde med skoleopgaver på en ny måde
+
+2. **Forældreinvolvering**
+
+   - Indsigt i barnets læring og fremskridt
+   - Værktøjer til at støtte barnets uddannelsesrejse
+   - Fællesskab med andre forældre
+
+3. **Socialt fællesskab for børnene**
+
+   - Virtuelle studiegrupper med ligesindede
+   - Fællesprojekter og gruppelæring
+   - Peer-to-peer-læring under sikre forhold
+
+4. **Fleksibelt læringsmiljø**
+   - Tilgængeligt når og hvor det passer barnet
+   - Supplement til skolens pensum
+   - Mulighed for at dykke dybere ned i interesseområder
 
 ## Opnåede milepæle
 
@@ -273,166 +309,150 @@ Dette dokument opdateres løbende med fremskridt og nye ideer.
 
 ## Fokusområder - Første iteration
 
-Baseret på nutidige prioriteter vil følgende områder være i fokus for den første udviklingsiteration:
+Baseret på vores bredere fokus på alle børn og forældre, vil følgende områder være i fokus for den første udviklingsiteration:
 
-### Brugerengagement gennem Gamification
+### Engagerende læringsaktiviteter
 
-#### 1. Pointsystem (Sprint 1-2)
+#### 1. Basale læringsspil (Sprint 1-2)
 
-- [ ] **Grundlæggende pointsystem**
+- [ ] **Matematik-spil**
 
-  - Design database-struktur for point og aktiviteter
-  - Implementer point-tildeling for færdiggjorte aktiviteter (spil, lektioner, studiegrupper)
-  - Skab en synlig point-visning på profilen og dashboard
+  - Udvikle basale regneøvelser i spilformat
+  - Implementer forskellige sværhedsgrader
+  - Skab belønningssystem der motiverer til fortsat læring
 
-- [ ] **Streak og daglig login-bonus**
+- [ ] **Sprog og læsning**
 
-  - Implementer system til at registrere daglige logins
-  - Design progressivt belønningssystem (stigende belønninger for konsekvente logins)
-  - Skab visuelle indikatorer for streak-status
+  - Design interaktive stavespil
+  - Implementer læseforståelsesopgaver
+  - Skab ordforrådstrænere for forskellige aldersgrupper
 
-- [ ] **Point-historik og analyse**
-  - Udvikle en detaljeret visning af hvordan og hvornår point er optjent
-  - Skab visuelle grafer over point-optjening over tid
-  - Implementer ugentlige og månedlige sammenfatninger
+- [ ] **Kreative udfordringer**
+  - Udvikle små kreative opgaver der kan løses digitalt
+  - Implementer mulighed for at dele sine kreationer
+  - Skab tværfaglige projekter der kombinerer kreativitet og læring
 
-#### 2. Achievements og Badges (Sprint 3-4)
+#### 2. Studieunderstøttelse (Sprint 3-4)
 
-- [ ] **Grundlæggende achievement-system**
+- [ ] **Lektiehjælpsværktøjer**
 
-  - Design database-model for achievements og deres kriterier
-  - Implementer 10-15 grundlæggende achievements (første login, første spil, etc.)
-  - Skab notifikationssystem for opnåede achievements
+  - Design enkle værktøjer til at løse almindelige skoleopgaver
+  - Implementer guides til typiske lektiespørgsmål
+  - Skab ressourcesamlinger for forskellige fag
 
-- [ ] **Badge-design og -visning**
+- [ ] **Studiegruppefunktionalitet**
 
-  - Design visuelt attraktive badges for forskellige kategorier
-  - Implementer badge-samling på profilsiden
-  - Skab "næste skridt" visning for kommende badges
+  - Forbedre eksisterende studiegruppefunktioner
+  - Implementer virtuelle studierum
+  - Skab mulighed for at samarbejde om skoleopgaver
 
-- [ ] **Kategori-baserede achievements**
-  - Opret achievements for forskellige læringskategorier (matematik, sprog, etc.)
-  - Implementer sværhedsbaserede badges inden for hver kategori
-  - Tilføj sjældne/særlige badges for ekstraordinære præstationer
+- [ ] **Quizzer og tests**
+  - Udvikle quizværktøjer til selvtest
+  - Implementer automatisk feedback
+  - Skab tilpassede udfordringer baseret på tidligere resultater
 
-#### 3. Niveau- og Progressionssystem (Sprint 5-6)
+### Forældremodul
 
-- [ ] **Niveau-system**
-
-  - Design niveau-struktur med krav for hvert niveau
-  - Implementer niveau-op animationer og belønninger
-  - Skab visuel indikator for nuværende niveau og fremskridt til næste
-
-- [ ] **Færdighedstræer**
-
-  - Design træstrukturer for forskellige læringsområder
-  - Implementer låste/ulåste noder baseret på fremskridt
-  - Skab visuel fremstilling af samlede færdigheder og fremskridt
-
-- [ ] **Udfordringer og missioner**
-  - Udvikle et system for tidsbegrænsede udfordringer
-  - Design forskellige udfordringstyper (daglige, ugentlige, specielle)
-  - Implementer belønninger og notifikationer for udfordringer
-
-### Forældre- og Lærerinvolvering
-
-#### 1. Forældreportal (Sprint 1-3)
-
-- [ ] **Grundlæggende forældrekonto**
-
-  - Design database-model for forældre-barn relationer
-  - Implementer proces for at knytte børnekonti til forældrekonti
-  - Skab separat login og dashboard for forældre
+#### 1. Grundlæggende forældreværktøjer (Sprint 1-3)
 
 - [ ] **Aktivitetsoversigt**
 
-  - Udvikle detaljeret oversigt over barnets aktiviteter
-  - Implementer tidslinjefunktion for læringsfremskridt
-  - Skab filtreringsmuligheder for aktivitetstyper
+  - Design dashboard for forældres overblik over barnets aktiviteter
+  - Implementer fremskridtsindikatorer
+  - Skab notifikationssystem for vigtige begivenheder
 
-- [ ] **Præstationsindsigt**
-  - Design visualiseringer af barnets styrker og svagheder
-  - Implementer sammenligning med alderssvarende gennemsnit
-  - Skab personaliserede anbefalinger baseret på præstationer
+- [ ] **Ressourcebibliotek**
 
-#### 2. Forældrekontrol og -værktøjer (Sprint 4-5)
-
-- [ ] **Tidsbegrænsning og skema**
-
-  - Design interface for at sætte tidsbegrænsninger
-  - Implementer skema for tilgængelige tider
-  - Skab notifikationer og påmindelser
-
-- [ ] **Indholdsfiltreringsværktøjer**
-
-  - Udvikle system til at kontrollere adgang til forskellige indholdstyper
-  - Implementer aldersbaseret filtrering
-  - Skab godkendelsesworkflow for visse aktiviteter
+  - Udvikle samling af forældreressourcer og -guider
+  - Implementer filtreringsværktøjer efter fag, niveau og format
+  - Skab mulighed for forældreanbefaling og bedømmelse
 
 - [ ] **Kommunikationsværktøjer**
-  - Design beskedsystem mellem forældre og lærere
-  - Implementer notifikationer om vigtige begivenheder
-  - Skab mulighed for at dele barnets præstationer
+  - Design beskedsystem til kommunikation med andre forældre
+  - Implementer feedback-muligheder til platformens udviklere
+  - Skab kontaktmuligheder til lærere (hvis barnet går i skole)
 
-#### 3. Lærerværktøjer (Sprint 6-8)
+#### 2. Understøttelse af barnets læring (Sprint 4-5)
 
-- [ ] **Klasseadministration**
+- [ ] **Læringsplaner**
 
-  - Design system til at oprette og administrere klasser
-  - Implementer elev-tilføjelse og grupperingsværktøjer
-  - Skab oversigt over klasseaktivitet og -fremskridt
+  - Design værktøj til at opstille læringsmål sammen med barnet
+  - Implementer milepæle og belønninger
+  - Skab skabeloner baseret på aldersgruppe og interesser
 
-- [ ] **Opgavetildeling og -evaluering**
+- [ ] **Fremskridtssporing**
 
-  - Udvikle værktøjer til at oprette og tildele opgaver
-  - Implementer automatisk og manuel evaluering
-  - Skab feedback-system til elever
+  - Udvikle detaljerede rapporter over barnets fremskridt
+  - Implementer datavisualisering af styrker og udviklingspotentialer
+  - Skab sammenligningsmuligheder med tidligere perioder
 
-- [ ] **Fremskridtsrapportering**
-  - Design omfattende rapporter for individuelle elever og klasser
-  - Implementer eksport af data til forskellige formater
-  - Skab periodiske automatiske rapporter til forældre
+- [ ] **Anbefalingsværktøjer**
+  - Design personaliserede anbefalinger af aktiviteter
+  - Implementer forslag baseret på barnets præstationer
+  - Skab mulighed for at planlægge læringsforløb
+
+### Socialiseringsværktøjer
+
+#### 1. Sikre sociale interaktioner (Sprint 1-2)
+
+- [ ] **Modererede chatfunktioner**
+
+  - Forbedre eksisterende chat med filtreringsværktøjer
+  - Implementer alder-baserede begrænsninger
+  - Skab rapporteringsværktøjer for upassende indhold
+
+- [ ] **Gruppeprojekter**
+
+  - Design rammer for samarbejde mellem børn
+  - Implementer værktøjer til koordinering (opgavefordeling, deadlines)
+  - Skab præsentationsplatform for færdige projekter
+
+- [ ] **Interaktive samarbejdsaktiviteter**
+  - Udvikle multiplayer-læringsaktiviteter
+  - Implementer samarbejdsbaserede udfordringer
+  - Skab fælles belønninger for gruppearbejde
 
 ## Teknisk implementering for fokusområder
 
 ### Database-ændringer
 
 - Tilføj følgende collections/tabeller:
-  - Points (bruger_id, aktivitet_type, point_antal, tidsstempel)
-  - Achievements (id, navn, beskrivelse, kriterie_type, kriterie_værdi, ikon_url)
-  - UserAchievements (bruger_id, achievement_id, opnået_dato)
-  - Levels (niveau, påkrævet_point, belønninger)
-  - UserProgress (bruger_id, niveau, total_point, streak_dage)
-  - ParentAccounts (id, navn, email, tilknyttede_børn)
-  - ClassGroups (id, lærer_id, navn, beskrivelse, elev_liste)
-  - TimeRestrictions (bruger_id, ugedag, start_tid, slut_tid)
+  - LearningGames (id, titel, type, fag, niveau, beskrivelse)
+  - GameProgress (bruger_id, spil_id, niveau, score, afsluttet_dato)
+  - ParentProfiles (id, bruger_id, børn, præferencer)
+  - ChildProfiles (id, bruger_id, alder, interesser, skoletrin)
+  - LearningResources (id, titel, beskrivelse, fag, niveau, filtype, url)
+  - LearningPlans (id, barn_id, titel, beskrivelse, mål, deadlines)
+  - GroupActivities (id, type, titel, beskrivelse, aldersgruppe, maks_deltagere)
 
 ### API Endpoints
 
 - Nye endpoints der skal implementeres:
-  - `/api/points` - CRUD for pointsystem
-  - `/api/achievements` - Hent og kontroller achievements
-  - `/api/progress` - Hent og opdater brugerens progression
-  - `/api/parent` - Forældrekonti og børneoversigt
-  - `/api/teacher` - Lærerværktøjer og klassestyring
-  - `/api/restrictions` - Forældrekontrol-indstillinger
+  - `/api/games` - CRUD for læringsspil
+  - `/api/progress` - Håndtering af brugerens fremskridt
+  - `/api/resources` - Håndtering af læringsressourcer
+  - `/api/parents` - Funktioner for forældrebrugere
+  - `/api/plans` - CRUD for læringsplaner
+  - `/api/groups` - Håndtering af studiegrupper og gruppeprojekter
 
 ### Frontend-komponenter
 
 - Nye komponenter der skal udvikles:
-  - PointsDisplay - Viser brugerens point og niveau
-  - AchievementGallery - Viser opnåede og tilgængelige badges
-  - ProgressChart - Visualiserer fremskridt over tid
+  - GameHub - Oversigt og adgang til læringsspil
+  - ProgressTracker - Visualisering af læringsrejsen
+  - ResourceLibrary - Visning og filtrering af læringsressourcer
+  - PlanBuilder - Værktøj til at skabe læringsplaner
   - ParentDashboard - Oversigt for forældre
-  - TimeRestrictionSettings - Interface til tidsstyring
-  - ClassManagement - Værktøjer til lærere
-  - ReportGenerator - Generering af rapporter
-  - ChallengeHub - Oversigt over aktive udfordringer
+  - GroupProject - Samarbejdsområde for gruppeprojekter
+  - ActivityFeed - Tidslinje over barnets seneste aktiviteter
 
 ### Integrationer
 
 - Potentielle tredjepartsværktøjer til overvejelse:
-  - ChartJS eller D3.js for datapræsentation
-  - PDF.js for rapport-generering
-  - Firebase Cloud Messaging for notifikationer
-  - Google Classroom API for integration med eksisterende skolesystemer
+  - Firebase for realtids-multiplayer
+  - Google Drive eller OneDrive for dokumentdeling
+  - Khan Academy API for læringsressourcer
+  - YouTube API for kuraterede læringsvideoer
+  - ChatGPT API for interaktiv lektiehjælp
+
+> Note: Platformen vil være designet med skalerbarhed for øje, så den senere kan tilpasses til mere specialiserede målgrupper (som hjemmeunderviste børn) eller integreres med skolesystemer, alt efter hvad brugerdata viser er mest værdifuldt.
